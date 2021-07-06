@@ -1,5 +1,24 @@
-# -2021/7/5 星期一
-安装nodejs vue等环境  
-实现部分基础功能
+# vue
 
-# -2021/7/6 星期二
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
