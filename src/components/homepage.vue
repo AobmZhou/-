@@ -1,31 +1,97 @@
 <template>
 	<div class="protype-product">
-	<el-container style="height:100%;">
-	  <el-header>Header</el-header>
-	  <el-container>
-	    <el-main style="padding:0;margin:0;margin-top:0;">
+	<el-container style="height:100%;">	
+	  <el-header>
+		
+		  <el-menu
+		    :default-active="activeIndex2"
+		    class="el-menu-demo"
+		    mode="horizontal"
+		    @select="handleSelect"
+		    background-color="#545c64"
+		    text-color="#fff"
+		    active-text-color="#ffd04b"
+			style="background-color:#2C3242;">
+			
+		    <el-submenu index="1">
+		      <template slot="title">应急柴油机振动监测系统</template>
+		      <el-menu-item index="1-1">机组概貌图</el-menu-item>
+		      <el-menu-item index="1-2">运行状态图</el-menu-item>
+		      <el-menu-item index="1-3">历史比较图</el-menu-item>
+			  <el-menu-item index="1-4">单值棒图</el-menu-item>
+			  <el-menu-item index="1-5">动态压力监测</el-menu-item>
+			  <el-menu-item index="1-6">事件查询</el-menu-item>
+			  <el-menu-item index="1-7">振动监测</el-menu-item>
+			  <el-menu-item index="1-8">瞬时转速</el-menu-item>
+			  <el-menu-item index="1-9">扭振</el-menu-item>
+			  <el-menu-item index="1-10">多参数分析</el-menu-item>
+			  <el-menu-item index="1-11">综合监测</el-menu-item>
+			  <el-menu-item index="1-12">示功图</el-menu-item>
+			  <el-menu-item index="1-13">冲击诊断</el-menu-item>
+			  <el-menu-item index="1-14">其他参数趋势图</el-menu-item>
+			  <el-menu-item index="1-15">往复报警查询</el-menu-item>
+			  <el-menu-item index="1-16">开停车状态分析</el-menu-item>
+			  <el-menu-item index="1-17">开停车事件查询</el-menu-item>
+		    </el-submenu>
+			
+			<el-submenu index="2">
+			  <template slot="title">往复机械专用图谱</template>
+			  <el-menu-item index="2-1">机组概貌图</el-menu-item>
+			  <el-menu-item index="2-2">往复报警查询</el-menu-item>
+			  <el-menu-item index="2-3">运行状态图</el-menu-item>
+			  <el-menu-item index="2-4">历史比较图</el-menu-item>
+			  <el-menu-item index="2-5">单值棒图</el-menu-item>
+			  <el-menu-item index="2-6">活塞杆沉降/偏摆监测</el-menu-item>
+			  <el-menu-item index="2-7">振动监测</el-menu-item>
+			  <el-menu-item index="2-8">多参数分析</el-menu-item>
+			  <el-menu-item index="2-9">综合监测</el-menu-item>
+			  <el-menu-item index="2-10">其它参数趋势图</el-menu-item>
+			  <el-menu-item index="2-11">示功图</el-menu-item>
+			  <el-menu-item index="2-12">冲击诊断</el-menu-item>
+			</el-submenu>
+			
+			<el-submenu index="3">
+			  <template slot="title">旋转机械专用图谱</template>
+			  <el-menu-item index="3-1">选项1</el-menu-item>
+			  <el-menu-item index="3-2">选项2</el-menu-item>
+			  <el-menu-item index="3-3">选项3</el-menu-item>
+			</el-submenu>
+			
+			<el-submenu index="4">
+			  <template slot="title">机泵专用图谱</template>
+			  <el-menu-item index="4-1">选项1</el-menu-item>
+			  <el-menu-item index="4-2">选项2</el-menu-item>
+			  <el-menu-item index="4-3">选项3</el-menu-item>
+			</el-submenu>
+			
+			<el-submenu index="5">
+			  <template slot="title">无线机泵专用图谱</template>
+			  <el-menu-item index="5-1">选项1</el-menu-item>
+			  <el-menu-item index="5-2">选项2</el-menu-item>
+			  <el-menu-item index="5-3">选项3</el-menu-item>
+			</el-submenu>
+			
+		  </el-menu>
+	  </el-header> 
+	  
+	<el-container>
+	    <el-container class="main-container" style="padding:0;margin:0;margin-top:0;">
 			<!-- Main -->
 		  <el-col>
 			  <div class="left">
 				  <!-- 左侧边栏 -->
-				  <div>
-					<input v-model="search" 
-					placeholder="搜索"
-					style="
-					padding:10px;
-					margin-top:2px;
-					width:208px;
-					height:10px;
-					border-radius:4px;
-					border:1px solid #DCDFE6;
-					font-size:inherit;
-					display:inline-block;
-					background-color:#303749;
-					outline:0;
-					color:white;
-					">
-					</input>
-				  </div>
+				  
+					<el-input class="id" v-model="filterText"  placeholder="搜索">
+					</el-input>
+					
+					<el-tree
+					  class="filter-tree"
+					  :data="data"
+					  :props="defaultProps"
+					  default-expand-all
+					  :filter-node-method="filterNode"
+					  ref="tree">
+					</el-tree>
 			  </div>
 		  </el-col>
 		  <el-col>
@@ -74,14 +140,71 @@
 				  </el-header>
 			  </div>
 		  </el-col>
-		</el-main>
+		</el-container>
 	  </el-container>
 	</el-container>
 	</div>
 </template>
 
 <script>
-export default{};
+export default {
+	
+	watch: {
+	      
+		filterText(val) {
+	        this.$refs.tree.filter(val);
+	      }
+	    },
+	
+	    methods: {
+	      filterNode(value, data) {
+	        if (!value) return true;
+	        return data.label.indexOf(value) !== -1;
+	      },
+		  handleSelect(key, keyPath) {
+		  	console.log(key, keyPath);
+		  }
+	    },//methods的结尾处
+	
+	    data() {
+	      return {
+	        filterText: '',
+	        data: [{
+	          id: 1,
+	          label: '中国石油',
+	          children: [{
+	            id: 2,
+	            label: '大庆石化',
+	            children: [{
+	              id: 3,
+	              label: '二催化',
+				  children:[{
+					  id :4,
+					  label: '重整',
+					  children:[{
+						  id :5,
+						  label: 'DZTB'
+					  },{
+						  id :6,
+						  label: 'J1102A'
+					  },{
+						  id :7,
+						  label :'K-2038'
+					  },{
+						  id :8,
+						  label :'P102A'
+					  }]
+				  }]
+	            }]
+	          }]
+	        }],
+	        defaultProps: {
+	          children: 'children',
+	          label: 'label'
+	        },
+	      };//return的结尾处
+	    },//data的结尾处      
+};
 </script>
 
 <style>
@@ -99,21 +222,28 @@ export default{};
 	position: relative;
 	
 }
-.input{
-    background-image: none;
-    border-radius: 4px;
-    border: 1px solid #dcdfe6;
-    color: #606266;
-    display: inline-block;
-    font-size: inherit;
-    height: 40px;
-    line-height: 40px;
-    outline: 0;
-    padding: 0 15px;
-    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
-    width: 100%;
+.el-submenu .el-submenu__title{
+	background-color:#2C3242 !important;
+	font-size: 14px;
+	font-weight: 500;
+	font-family: "\5FAE\8F6F\96C5\9ED1";
 }
-.el-main{
+.el-menu--horizontal > .el-submenu.is-active .el-submenu__title
+{
+	border-bottom:2px solid #359186 !important;
+	color:#359186 !important;
+}
+.el-menu-item{
+	background-color:#2C3242 !important;
+}
+.el-menu-item.is-active{
+	color:#359186 !important;
+	font-family: "\5FAE\8F6F\96C5\9ED1";
+}
+.el-menu-item:hover{
+	background-color: #232835 !important;
+}
+.main-container{
 	background-color:#232835;
 	position: relative;
 
@@ -135,6 +265,27 @@ export default{};
   	margin-left:240px;
   	position:absolute;
   	background-color:#232835;
+}
+.el-tree-node > .el-tree-node__content{
+	background-color:#2C3242;
+	color:white;
+	font-family: "\5FAE\8F6F\96C5\9ED1";
+}
+.el-tree-node:focus > .el-tree-node__content {
+	background-color:#359186 !important;
+}
+
+.el-tree-node:hover > .el-tree-node__content {
+	background-color:#2C3242;
+}
+.id > .el-input__inner{
+	height:30px;
+	background:#232835;
+	background-color:#232835;
+	color:white;
+}
+.el-tree__empty-block{
+	background: #2C3242;
 }
 .right-hide{
   	margin:10px;
