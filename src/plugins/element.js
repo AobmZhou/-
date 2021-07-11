@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import ElementUI from 'element-ui';
 import {
 Button,
 Message,
@@ -14,8 +15,9 @@ Menu,
 Submenu,
 MenuItem,
 MenuItemGroup,
+Checkbox,
 } from 'element-ui'
-
+Vue.use(ElementUI)
 Vue.use(Button)
 Vue.use(Container)
 Vue.use(Header)
@@ -29,5 +31,6 @@ Vue.use(Menu)
 Vue.use(Submenu)
 Vue.use(MenuItem)
 Vue.use(MenuItemGroup)
+Vue.use(Checkbox)
 
 
