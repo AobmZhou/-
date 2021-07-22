@@ -8,12 +8,19 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "babel-polyfill": "^6.26.0",
     "core-js": "^3.6.5",
-    "echarts": "^5.1.2",
+    "echarts": "^4.1.0",
+    "echarts-gl": "^1.1.0",
+    "element-resize-detector": "^1.2.3",
     "element-ui": "^2.4.5",
     "less-loader": "^10.0.1",
+    "node-sass": "^4.14.1",
+    "sass-loader": "^8.0.2",
     "vue": "^2.6.11",
-    "vue-router": "^3.2.0"
+    "vue-router": "^3.2.0",
+    "vuex": "^3.6.2",
+    "webpack-dev-server": "^2.9.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

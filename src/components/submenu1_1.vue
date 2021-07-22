@@ -1,6 +1,6 @@
 <template>
-	<div class="title" style="color: white;">
-		<img class="about"src="../assets/about.jpg"/>
+	<div>
+		<img class="about" src="../assets/about.jpg"/>
 	</div>
 </template>
 
@@ -9,12 +9,11 @@ export default{
 }
 </script>
 
-<style>
+<style scoped>
 .about{
-	overflow: auto;
 	margin: 0;
 	padding: 0;
-	height:1000px;
-	width: 1305px;
+	height: 100%;
+	width: 100%;
 }
 </style>

@@ -1,10 +1,9 @@
 <template>
 	<div class="protype-product">
 	<el-container style="height:100%;">	
-	  <el-header>
+	  <el-header class="header">
 		
 		  <el-menu
-		    :default-active="activeIndex"
 			:router="true"
 		    class="el-menu-demo"
 		    mode="horizontal"
@@ -50,11 +49,11 @@
 				  运行状态图
 				  </el-menu-item>
 			  <el-menu-item index="/2-4">
-				   <img class="image" src="../assets/index4.png">
+				  <img class="image" src="../assets/index4.png">
 				  历史比较图
 				  </el-menu-item>
 			  <el-menu-item index="/2-5">
-				   <img class="image" src="../assets/index5.png">
+				  <img class="image" src="../assets/index5.png">
 				  单值棒图
 				  </el-menu-item>
 			  <el-menu-item index="/2-6">
@@ -90,14 +89,14 @@
 			<el-submenu index="3">
 			  <template slot="title">旋转机械专用图谱</template>
 			  <el-menu-item index="/3-1">选项1</el-menu-item>
-			  <el-menu-item index="/3-2">振动监测</el-menu-item>
+			  <el-menu-item index="/3-2">选项2</el-menu-item>
 			  <el-menu-item index="/3-3">选项3</el-menu-item>
 			</el-submenu>
 			
 			<el-submenu index="4">
 			  <template slot="title">机泵专用图谱</template>
 			  <el-menu-item index="/4-1">趋势分析</el-menu-item>
-			  <el-menu-item index="/4-2">选项2</el-menu-item>
+			  <el-menu-item index="/4-2">振动监测</el-menu-item>
 			  <el-menu-item index="/4-3">选项3</el-menu-item>
 			</el-submenu>
 			
@@ -114,69 +113,57 @@
 	<el-container>
 	    <el-container class="main-container" style="padding:0;margin:0;margin-top:0;">
 			<!-- Main -->
-		  <el-col>
-			  <div class="left" 
-			  :width="isLeftCollapse ?'0px':'12%'">
+
+			  <div class="left"
+			  :style="'width:'+LeftWidth+'%;'">
 				  <!-- 左侧边栏 -->
-				  
 					<el-input class="id" v-model="filterText"  placeholder="搜索">
 					</el-input>
 					
-					<el-tree
+					<!-- <el-tree
 					  class="filter-tree"
 					  :data="data"
 					  :props="defaultProps"
 					  default-expand-all
 					  :filter-node-method="filterNode"
-					  ref="tree">
-					</el-tree>
+					  ref="tree"
+					  @node-click="handleNodeClick">
+					</el-tree> -->
+					
+					<Tree class="trees" @NowEquid="ChangEquId" ></Tree>
+					
 			  </div>
-		  </el-col>
-		  <el-col>
-		  	<div class="left-hide">
-		  		隐藏左侧边栏
-				<el-button
-				type plain
-				@click="lefthide"
-				style="
-				padding:0;
-				padding-right:0px;
-				margin-top:1000%;
-				margin-left:0px;
-				width:20px;
-				height:40px;
-				border:none;
-				border-radius: 0;
-				background-color:#2C3242"
-				icon="el-icon-caret-left">
-				</el-button>
-			</div>
-		  </el-col>
-		  <el-main
+			  <div class="main" :style="{width: nowwidth}">
+			  
+			    <router-view
+			      @showOpPage='setOpPage'
+			    ></router-view>
+			  
+			  </div>
+		  <!-- :style="'width:'+MainWidth+'%;'" -->
+		  <!-- <el-main
 		  style="
-		  overflow: auto;
 		  background-color: #2C3242;
-		  margin: 0;
 		  margin-top:10px;
-		  padding: 0;
-		  width:70%;
-		  height:97%;
 		  margin-left:14%;
-		  position: absolute;"
+		  position:absolute;
+		  width:86%;
+		  height:97%;"
 		  >
 		  <router-view></router-view>
-		  </el-main>
-		  <el-col>
-		  	<div class="right-hide" >
-			隐藏右侧边栏
+		  </el-main> -->
+			<!-- <div 
+				class="right-hide"
+				align="center"
+				:style="'margin-left:'+RightHideWidth+'%;'">
 				<el-button
 				type plain
 				@click="righthide"
 				style="
 				padding:0;
 				padding-right:0px;
-				margin-top:1000%;
-				margin-left:10px;
+				margin-top:1200%;
+				margin-left:8px;
 				width:20px;
 				height:40px;
 				border:none;
@@ -184,23 +171,10 @@
 				background-color:#2C3242"
 				icon="el-icon-caret-right">
 				</el-button>
-		  	</div>
-		  </el-col>
-		  <el-col>
-			  <div class="right"
-			  :width="isRightCollapse ?'0px':'15%'">
-				  <el-header class="right-font" style="color:#359186">
-					  操作页 
-				  </el-header>
-				  <template>
-				    <!-- `checked` 为 true 或 false -->
-				    <el-checkbox v-model="checked" 
-					style="margin-left:25px;
-					color: white;
-					">备选项</el-checkbox>
-				  </template>
-			  </div>
-		  </el-col>
+		  	</div> -->
+			  <!-- <div class="right"
+			  :style="'width:'+RightWidth+'%;'">
+			  </div> -->
 		</el-container>
 	  </el-container>
 	</el-container>
@@ -208,77 +182,137 @@
 </template>
 
 <script>
+import Tree from "../components/Tree";
+var elementResizeDetectorMaker = require("element-resize-detector");
+
 export default {
+	computed: {
 	
+	  etype() {
+	    return this.$store.state.etype;
+	  },
+	  nowequid() {
+	    return this.$store.state.equid.toString();
+	  },
+	  nowequname() {
+	    return this.$store.state.equName.toString();
+	  },
+	
+	  activeIndex() {
+	    //alert(this.$route.path.replace('/', ''));
+	    return this.$route.path.replace('/', '');
+	  }
+	},
+	components: {
+	  Tree,
+	},
 	watch: {
-	      
 		filterText(val) {
 	        this.$refs.tree.filter(val);
 	      }
 	    },
 	    data() {
 	      return {
+			nowwidth: (window.screen.width - 270) + 'px',
+			isRightCollapse:false,
+			MainWidth:68,
+			RightWidth:15,
+			RightHideWidth:82.5,
+			checked:false,
 	        filterText: '',
-	        data: [{
-	          id: 1,
-	          label: '中国石油',
-	          children: [{
-	            id: 2,
-	            label: '大庆石化',
-	            children: [{
-	              id: 3,
-	              label: '二催化',
-				  children:[{
-					  id :4,
-					  label: '重整',
-					  children:[{
-						  id :5,
-						  label: 'DZTB'
-					  },{
-						  id :6,
-						  label: 'J1102A'
-					  },{
-						  id :7,
-						  label :'K-2038'
-					  },{
-						  id :8,
-						  label :'P102A'
-					  }]
-				  }]
-	            }]
-	          }]
-	        }],
-	        defaultProps: {
-	          children: 'children',
-	          label: 'label'
-	        }, 
+			showOpPage: true,
 	      };//return的结尾处
 		  
 		 
 	    },//data的结尾处   
-		mounted()
-		{
-			this.isLeftCollapse=false;
-			this.isRightCollapse=false;
-			checked=false;
-		},
 		methods: {
-		lefthide(){
-			this.isLeftCollapse = !this.isLeftCollapse
-			console.log(this.isLeftCollapse);
-		},
+			setOpPage(param) {
+			  console.log(param);
+			  if (param === false) {
+			    this.nowWidth = this.nowWidth + 290;
+			    document.getElementById("lefttupu").style.width = this.nowWidth.toString() + 'px';
+			  } else {
+			    this.nowWidth = this.nowWidth - 290;
+			    document.getElementById("lefttupu").style.width = this.nowWidth.toString() + 'px';
+			  }
+			},
 		righthide(){
 			this.isRightCollapse = !this.isRightCollapse
-			console.log(this.isRightCollapse);
+			if(this.isRightCollapse==true)
+			{
+				this.RightWidth=0;
+				this.RightHideWidth=98;
+				this.MainWidth=this.MainWidth+15;
+			};
+			if(this.isRightCollapse==false)
+			{
+				this.MainWidth=this.MainWidth-15;
+				this.RightWidth=15;
+				this.RightHideWidth=82.5;
+			};
 		},
 		filterNode(value, data) {
 			if (!value) return true;
 		    return data.label.indexOf(value) !== -1;
 		},
-		  handleSelect(key, keyPath) {
-		  	console.log(key, keyPath);
+		ChangEquId() {
+		  this.equid = this.$store.state.equid;
+		},
+		handleClick() {
+		  // if()
+		  // console.log(this.nowOpenedIndex.toString());
+		  if (this.isOpened != true) {
+		    this.$refs.topMenu.close(this.nowOpenedIndex.toString());
 		  }
-		},//methods的结尾处
+		  this.isOpened = false;
+		},
+		handleOpen(index) {
+		  this.nowOpenedIndex = index;
+		  // console.log(index)
+		  this.isOpened = true;
+		},
+		handleSelect(index, keyPath) {
+		  //     console.warn(index, keyPath);
+		  if (index === 'TrendAnalysis') {
+		    this.nowpos = '/TrendAnalysis';
+		    this.$router.push({path: "/TrendAnalysis"});
+		  }
+		  this.$router.push({query: {equipmentUuid: this.nowequid}});
+		  var erd = elementResizeDetectorMaker();
+		  var plantHeight = elementResizeDetectorMaker();
+		  let that = this;
+		  that.$nextTick(function () {
+		    erd.listenTo(document.getElementById("lefttupu"), function (element) {
+		      var width = element.offsetWidth;
+		      var height = element.offsetHeight;
+		      that.$nextTick(function () {
+		        this.nowWidth = width;
+		      });
+		    });
+		
+		    plantHeight.listenTo(document.getElementById("leftAside"), function (element) {
+		      var plant_height = element.offsetHeight;
+		      if (document.getElementById("UnitOverviewMap")) {
+		        document.getElementById("UnitOverviewMap").style.height = plant_height.toString() + 'px';
+		      }
+		    });
+		  });
+		
+		},
+		// handleSelect(key, keyPath) {
+		//   	console.log(key, keyPath);
+		// },
+		// handleNodeClick(data) {
+		// 	if(data.id == 5)
+		// 	this.$router.push('/2-1');		
+		// 	if(data.id == 6)
+		// 	this.$router.push('/3-1');
+		// 	if(data.id == 7)
+		// 	this.$router.push('/4-1');
+		// 	if(data.id == 8)
+		// 	this.$router.push('/5-1');
+		// }
+	},//methods的结尾处
 };
 </script>
 
@@ -294,7 +328,7 @@ export default {
 		height:100%;
 		overflow: auto;
 	}
-.el-header{
+.header{
 	background-color:#2C3242;
 	position: relative;
 	
@@ -329,6 +363,9 @@ export default {
 	position: relative;
 
 }
+.main{
+	margin-left: 14%;
+}
 .image{
 	background-color: white;
 	margin: 0px;
@@ -338,13 +375,12 @@ export default {
 }
 .left{
 	margin:10px;
-	padding:0;
-	width:12%;
 	height:98%;
+	width:12.5%;
 	margin-left:10px;
 	position:absolute;
 	overflow: auto;
-	background-color: #2C3242;
+	background-color: #303749;
 }
 .right{
 	overflow: auto;
@@ -356,13 +392,11 @@ export default {
 	background-color: #2C3242;
 }
 .left-hide{
-	float:left;
 	overflow: auto;
   	margin:10px;
   	padding:0;
   	width:30px;
-  	height:98%;
-  	margin-left:12.5%;	
+  	height:98%;	
   	position:absolute;
   	background-color:#232835;
 }
@@ -389,13 +423,12 @@ export default {
 	background: #2C3242;
 }
 .right-hide{
-	float:right;
 	overflow: auto;
   	margin:10px;
   	padding:0;
   	width:30px;
   	height:98%;
-  	margin-left:82%;
+  	margin-left:82.5%;
   	position:absolute;
   	background-color:#232835;
 }
@@ -410,4 +443,10 @@ export default {
 .el-col-24{
 	width:0 !important;
 }
+.mainbox{
+	width:88%;
+	height:98%;
+	margin-left: 14%;
+}
+
 </style>

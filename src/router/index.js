@@ -1,5 +1,7 @@
 import Vue from 'vue'
+
 import VueRouter from 'vue-router'
+
 import homepage from '../components/homepage.vue'
 import submenu1_1 from '../components/submenu1_1.vue'
 import submenu1_2 from '../components/submenu1_2.vue'
@@ -18,12 +20,25 @@ import submenu1_14 from '../components/submenu1_14.vue'
 import submenu1_15 from '../components/submenu1_15.vue'
 import submenu1_16 from '../components/submenu1_16.vue'
 import submenu1_17 from '../components/submenu1_17.vue'
+import submenu2_1 from '../components/submenu2_1.vue'
+import submenu3_1 from '../components/submenu3_1.vue'
 import submenu4_1 from '../components/submenu4_1.vue'
+import submenu5_1 from '../components/submenu5_1.vue'
 import submenu3_2 from '../components/submenu3_2.vue'
+import submenu4_2 from '../components/submenu4_2.vue'
+
+import menu from '../page/menu.vue'
+import TrendAnalysis from '../page/TrendAnalysis.vue'
+
 
 Vue.use(VueRouter)
+// const routerPush = Router.prototype.push
+// Router.prototype.push = function push(location) {
+//   return routerPush.call(this, location).catch(error=> error)
+// }
 
 const router = new VueRouter({
+  mode:'history',
   routes:[
 	  {path:'/',redirect:'/home'},
 	  {
@@ -47,15 +62,29 @@ const router = new VueRouter({
 			  {path:'/1-16',component:submenu1_16,},
 			  {path:'/1-17',component:submenu1_17,},
 			  {path:'/4-1',component:submenu4_1,},
-			  {path:'/3-2',component:submenu3_2,}
-			  
+			  {path:'/3-2',component:submenu3_2,},
+			  {path:'/4-2',component:submenu4_2},  
 			  ]
-	  
-	  
 	  },
-	  
-	  
-  ]
+  ],
 })
 
 export default router
+
+
+
+	  // {
+	  //   path: '/',
+	  //   redirect:'TrendAnalysis',
+	  //   name: 'menu',
+	  //   component: menu,
+	  //   children: [
+	  //     {
+	  //       path: '/TrendAnalysis',
+	  //       name: 'TrendAnalysis',
+	  //       component: TrendAnalysis,
+	  //     },
+	      
+	  
+	  //   ]
+	  // },

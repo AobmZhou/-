@@ -1,19 +1,19 @@
 module.exports = {
-   outputDir: 'dist',   //build输出目录
-   assetsDir: 'assets', //静态资源目录（js, css, img）
-   lintOnSave: false, //是否开启eslint
-   devServer: {
-       open: true, //是否自动弹出浏览器页面
-       host: "localhost", 
-       port: '8081', 
-       https: false,   //是否使用https协议
-       hotOnly: false, //是否开启热更新
-       proxy: {
-		   '/api': {
-            target: 'https://www.v2ex.com/api', //API服务器的地址
-            changeOrigin: true,
-            pathRewrite: {
-            '^/api': ''}
-            }
-        }
+    devServer:{
+		host:'localhost',
+		port:8080,
+		open:true,
+        proxy:{
+          '/': {
+				target:'http://39.106.127.16:6793',
+				//target: 'http://39.106.31.26:8289',//设置你调用的接口域名和端口号 别忘了加http
+				changeOrigin: true,    //这里true表示实现跨域
+				websockets: true,
+				secure: false, // 如果是https接口，需要配置这个参数
+				pathRewrite: {
+				'^/':'/'
+				}
+			}
+		}
+	}
 }
